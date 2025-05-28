@@ -199,7 +199,6 @@ class Index_Builder:
             # batch_data_text = self.corpus[start_idx:start_idx+self.batch_size]['text']
             # batch_data = ['"' + title + '"\n' + text for title, text in zip(batch_data_title, batch_data_text)]
             batch_data = self.corpus[start_idx:start_idx+self.batch_size]['contents']
-
             if self.retrieval_method == "e5":
                 batch_data = [f"passage: {doc}" for doc in batch_data]
 

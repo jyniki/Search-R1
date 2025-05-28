@@ -5,7 +5,7 @@ export DATA_DIR='/rt-vepfs/jy/dataset/nq_data/nq_hotpotqa'
 WAND_PROJECT='Search-R1'
 
 export BASE_MODEL='/rt-vepfs/public_model/Qwen/Qwen2.5-7B'
-export EXPERIMENT_NAME=search-r1-grpo-qwen2.5-7b-em
+export EXPERIMENT_NAME=search-r1-grpo-qwen2.5-7b-em-resume
 
 # set -x
 export VLLM_ATTENTION_BACKEND=XFORMERS # vllm + qwen2-7b with flash_attn has some issues
@@ -56,7 +56,7 @@ PYTHONUNBUFFERED=1 python3 -m verl.trainer.main_ppo \
     actor_rollout_ref.actor.state_masking=true \
     trainer.logger=['wandb'] \
     +trainer.val_only=false \
-    +trainer.val_before_train=true \
+    +trainer.val_before_train=false \
     trainer.n_gpus_per_node=8 \
     trainer.nnodes=1 \
     trainer.save_freq=10 \
@@ -67,8 +67,8 @@ PYTHONUNBUFFERED=1 python3 -m verl.trainer.main_ppo \
     trainer.total_training_steps=1005 \
     trainer.default_hdfs_dir=null \
     trainer.default_local_dir=outputs/verl_checkpoints/$EXPERIMENT_NAME \
-    trainer.auto_resume=True \
-    trainer.resume_from_checkpoint=null \
+    trainer.auto_resume=False \
+    trainer.resume_from_checkpoint=outputs/verl_checkpoints/search-r1-grpo-qwen2.5-7b-em/global_step_10 \
     trainer.checkpoint_cleanup=True \
     trainer.max_checkpoints_to_keep=5 \
     max_turns=3 \

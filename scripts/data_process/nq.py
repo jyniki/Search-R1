@@ -40,7 +40,7 @@ Question: {question}\n"""
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--local_dir', default='./data/nq')
+    parser.add_argument('--local_dir', default='/rt-vepfs/jy/dataset/nq_data//nq')
     parser.add_argument('--hdfs_dir', default=None)
     parser.add_argument('--template_type', type=str, default='base')
 
@@ -48,7 +48,7 @@ if __name__ == '__main__':
 
     data_source = 'nq'
 
-    dataset = datasets.load_dataset('RUC-NLPIR/FlashRAG_datasets', 'nq')
+    dataset = datasets.load_dataset('/rt-vepfs/jy/dataset/RUC-NLPIR/FlashRAG_datasets', 'nq')
 
     train_dataset = dataset['train']
     test_dataset = dataset['test']

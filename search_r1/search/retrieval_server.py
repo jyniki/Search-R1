@@ -20,7 +20,8 @@ def load_corpus(corpus_path: str):
         'json', 
         data_files=corpus_path,
         split="train",
-        num_proc=4
+        num_proc=4,
+        cache_dir="/rt-vepfs/jy/cache/dataset"
     )
     return corpus
 
@@ -389,4 +390,4 @@ if __name__ == "__main__":
     retriever = get_retriever(config)
     
     # 3) Launch the server. By default, it listens on http://127.0.0.1:8000
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=7863)
