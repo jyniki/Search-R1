@@ -1,0 +1,82 @@
+{
+    "code": 200,
+    "message": "success",
+    "result": [
+        {
+            "score": 0.014705882407724857,
+            "file_id": 6138386966092621618,
+            "chunk_id": 35,
+            "kafka_id": "bdc430d7450e46d98ad0c02ff465a8df-35",
+            "chunk": "中科寒武纪科技股份有限公司：寒武纪:2020年年度报告\n# 第一节 释义\n## 一、 释义\nTest的缩写，存储器内建自测试技术，可提供存储器单元或阵列存储器的内建自测试电路，方便问题定位和生成测试向量\nIoT| 指| Internet of\nThings的缩写，中文名称为物联网，指通过各类信息传感器实时采集物理世界的信息，并通过网络传输信息实现物与物、物与人的泛在信息连接和智能化感知和管理\nIaaS| 指| Infrastructure as a Service的缩写，中文名称为基础设施即服务，指把IT基础设施作为一种服务通过网络提供给客户\nPaaS| 指| Platform as a Service的缩写，中文名称为平台即服务，指将软件研发平台作为一种服务提供给用户\nSaaS| 指| Software as a Service的缩写，中文名称为软件即服务，指通过网络提供软件服务\n",
+            "abs": "中科寒武纪科技股份有限公司：寒武纪:2020年年度报告\n# 第一节 释义\n## 一、 释义\nTest的缩写，存储器内建自测试技术，可提供存储器单元或阵列存储器的内建自测试电路，方便问题定位和生成测试向量\nIoT| 指| Internet of\nThings的缩写，中文名称为物联网，指通过各类信息传感器实时采集物理世界的信息，并通过网络传输信息实现物与物、物与人的泛在信息连接和智能化感知和管理\nIaaS| 指| Infrastructure as a Service的缩写，中文名称为基础设施即服务，指把IT基础设施作为一种服务通过网络提供给客户\nPaaS| 指| Platform as a Service的缩写，中文名称为平台即服务，指将软件研发平台作为一种服务提供给用户\nSaaS| 指| Software as a Service的缩写，中文名称为软件即服务，指通过网络提供软件服务\n",
+            "metadata": {
+                "title": "寒武纪:2020年年度报告",
+                "headers": {
+                    "Header_1": "第一节 释义",
+                    "Header_2": "一、 释义"
+                },
+                "announcement_date": "2021-04-27",
+                "company_name": "中科寒武纪科技股份有限公司",
+                "company_abbreviation": "寒武纪-U",
+                "start_time": "2020-01-01 00:00:00",
+                "end_time": "2020-12-31 23:59:59",
+                "type": "年度报告"
+            },
+            "rerank_score": 0.08304639835616438,
+            "source": "milvus_ann_cninfo_csi800",
+            "expand_abs": "广州金域医学检验集团股份有限公司：金域医学:2018年半年度报告\n# 第一节 释义\nCLIA），是将具有高灵敏度的化学发光测定技术与高特异性的免疫反应相结合，用于各种抗原、半抗原、抗体、激素、酶、脂肪酸、维生素和药物等的检测分析技术。\n免疫检验| 指| 利用免疫学技术的检验，免疫学指研究生物体对抗原物质免疫应答性及其方法的生物-医学科学。\n综合检验| 指| 公司主营业务收入分类中，除理化、质谱检验、基因组学检验、病理诊断、生化发光检验、免疫检验之外的其他检验项目。\nNIPT| 指| Non-invasive Prenatal\nTesting，无创产前基因检测，是一种DNA测序技术，可对母体外周血浆中的游离DNA片段（包含胎儿游离DNA）进行测序，并将测序结果进行生物信息分析，可以从中得到胎儿的遗传信息。\n血液学| 指| 是以血液和造血组织为主要研究对象的医学科学独立分支学科。\n放射免疫| 指| 简称放免，是利用同位素标记的与未标记的抗原同抗体发生竞争性抑制反应的放射性同位素体外微量分析方法。\n细胞遗传学| 指| 从细胞学的角度, 特别是从染色体的结构和功\n| | 能, 以及染色体和其他细胞器的关系来研究遗传现象, 阐明遗传和变异的机制。\n核酸| 指| 许多核苷酸聚合成的生物大分子化合物，为生命的最基本物质之一。根据化学组成不同，核酸可分为核糖核酸（简称RNA）和脱氧核糖核酸（简称DNA）。\n流式细胞技术| 指| Flow Cytometry, FCM，是利用流式细胞仪进行的一种单细胞定量分析和分选技术。\n高通量测序/二代测序、NGS| 指| Next Generation\n\nSequecing，是通过模板DNA分子的化学修饰，将其锚定在纳米孔或微载体芯片上，利用碱基互补配对原理，在DNA聚合酶链反应或DNA连接酶反应过程中，通过采集荧光标记信号或化学反应信号，实现碱基序列的解读，一次性可完成几十万至上百万条序列的测定。\n荧光原位杂交| 指| Fluorescence in situ\n\nhybridization，FISH，是在放射性原位杂交技术的基础上发展起来的一种非放射性分子细胞遗传技术，以荧光标记取代同位素标记而形成的一种新的原位杂交方法。\n数字病理远程会诊| 指|\n将传统切片利用集成显微影像处理、Web图像浏览等技术进行数字化处理，整合多年的病理领域经验、专家资源。为广大病理医生与患者，提供便捷、省时、省力与快速的专家咨询服务。\n医疗冷链物流| 指| 为医疗资源在贮藏运输、检验等各个环节中始终处于规定的低温环境下，以保证其符合医疗操作要求的一项系统工程。\n\n",
+            "time_score": -1.0438356164383562
+        },
+        {
+            "chunk": "环旭电子股份有限公司：环旭电子:2022年年度报告（英文版）\nmethods| Entrust Shanghai Weizheng Test Technology Co.,Ltd. and Shanghai\nHuihuan Environmental Testing Co., Ltd. to test\nDischarge standard| “Integrated Wastewater Discharge Standard” DB31/199|\nDischarge mode and destination| It is discharged from the pipe and enters the\nurban sewage treatment plant\nTesting items| Standard value| Test date\n",
+            "file_id": 126084880768278617,
+            "title": "环旭电子:2022年年度报告（英文版）",
+            "announcement_date": "2023-04-22",
+            "zh_company_full_name": "环旭电子股份有限公司",
+            "zh_company_abbreviation": "环旭电子",
+            "report_period": {
+                "start_time": "1970-01-01T00:00:00Z",
+                "end_time": "4999-12-31T23:59:59Z"
+            },
+            "report_type": "年度报告",
+            "headers": {},
+            "chunk_id": 449,
+            "kafka_id": "ddabbf48e24847ed9520f491d6fa2df7-es-449",
+            "abs": "环旭电子股份有限公司：环旭电子:2022年年度报告（英文版）\nmethods| Entrust Shanghai Weizheng Test Technology Co.,Ltd. and Shanghai\nHuihuan Environmental Testing Co., Ltd. to test\nDischarge standard| “Integrated Wastewater Discharge Standard” DB31/199|\nDischarge mode and destination| It is discharged from the pipe and enters the\nurban sewage treatment plant\nTesting items| Standard value| Test date\n",
+            "rerank_score": 0.05210810384931507,
+            "source": "es_ann_cninfo_csi800",
+            "expand_abs": "环旭电子股份有限公司：环旭电子:2022年年度报告（英文版）\n(I) Environmental protection information of companies belonging to key pollutant-discharge units and their main subsidiaries announced by the environmental protection department\n1. Pollutant Discharge information\n(1) The information of wastewater detection and waste treatment in USI (not including subsidiaries) in 2022 is as follows:\nInformation on Wastewater Discharge in 2022\n---\nNumber & position of wastewater discharge port| DW001| Monitoring units and\n环旭电子股份有限公司：环旭电子:2022年年度报告（英文版）\nmethods| Entrust Shanghai Weizheng Test Technology Co.,Ltd. and Shanghai\nHuihuan Environmental Testing Co., Ltd. to test\nDischarge standard| “Integrated Wastewater Discharge Standard” DB31/199|\nDischarge mode and destination| It is discharged from the pipe and enters the\nurban sewage treatment plant\nTesting items| Standard value| Test date\n环旭电子股份有限公司：环旭电子:2022年年度报告（英文版）\nDischarge mode and destination| It is discharged from the pipe and enters the\nurban sewage treatment plant\nTesting items| Standard value| Test date\n2022/7/25\npH| 6-9| 7.2\nChemical Oxygen Demand (COD) (mg/L)| 500| 61\nAnionic Surfactant (mg/L)| 20| 0.26\nBiochemical Oxygen Demand (BOD5) (mg/L)| 300| 19.4\nAmmonia Nitrogen (NH3-N) (mg/L)| 45| 1.5\nTotal Phosphorus (mg/L)| 8| 2.58\nTotal Nitrogen (mg/L)| 70| 5.8\nSuspended Solids (SS) (mg/L)| 400| 37\nPetroleum (mg/L)| 15| 0.06\nAnimal and Vegetable Oils (mg/L)| 100| 0.07\nDissolved Solids (mg/L)| 2000| 179\nNote| /| Qualified  \n",
+            "time_score": -0.050684931506849315
+        },
+        {
+            "score": 0.01587301678955555,
+            "file_id": 2982242193065583751,
+            "chunk_id": 22,
+            "kafka_id": "9794d8beff19421ea0110af460e40d01-22",
+            "chunk": "广州金域医学检验集团股份有限公司：金域医学:2020年年度报告\n# 第一节 释义\n## 一、 释义\nTesting，无创产前基因检测，是一种DNA测序技术，可对母体外周血浆中的游离DNA片段（包含胎儿游离DNA）进行测序，并将测序结果进行生物信息分析，可以从中得到胎儿的遗传信息。\n微生物学| 指|\n在分子、细胞或群体水平上研究各类微小生物（细菌、放线菌、真菌、病毒、立克次氏体、支原体、衣原体、螺旋体原生动物以及单细胞藻类）的形态结构、生长繁殖、生理代谢、遗传变异、生态分布和分类进化等生命活动的基本规律，并将其应用于工业发酵、医学卫生和生物工程等领域的科学。\n分子生物学| 指| 通过研究生物大分子（核酸、蛋白质）的结构、功能和生物合成等方面来阐明各种生命现象的本质的一门学科。\n血液学| 指| 是以血液和造血组织为主要研究对象的医学科学独立分支学科。\n放射免疫| 指| 简称放免，是利用同位素标记的与未标记的抗原同抗体发生竞争性抑制反应的放射性同位素体外微量分析方法。\n细胞遗传学| 指| 从细胞学的角度，特别是从染色体的结构和功能，以及染色体和其他细胞器的关系来研究遗传现象，阐明遗传和变异的机制。\n核酸| 指| 许多核苷酸聚合成的生物大分子化合物，为生命的最基本物质之一。根据化学组成不同，核酸可分为核糖核酸（简称RNA）和脱氧核糖核酸（简称DNA）。\n流式细胞技术| 指| Flow Cytometry,FCM，是利用流式细胞仪进行的一种单细胞定量分析和分选技术。\n高通量测序/二代测序、 NGS| 指| Next Generation\n",
+            "abs": "广州金域医学检验集团股份有限公司：金域医学:2020年年度报告\n# 第一节 释义\n## 一、 释义\nTesting，无创产前基因检测，是一种DNA测序技术，可对母体外周血浆中的游离DNA片段（包含胎儿游离DNA）进行测序，并将测序结果进行生物信息分析，可以从中得到胎儿的遗传信息。\n微生物学| 指|\n在分子、细胞或群体水平上研究各类微小生物（细菌、放线菌、真菌、病毒、立克次氏体、支原体、衣原体、螺旋体原生动物以及单细胞藻类）的形态结构、生长繁殖、生理代谢、遗传变异、生态分布和分类进化等生命活动的基本规律，并将其应用于工业发酵、医学卫生和生物工程等领域的科学。\n分子生物学| 指| 通过研究生物大分子（核酸、蛋白质）的结构、功能和生物合成等方面来阐明各种生命现象的本质的一门学科。\n血液学| 指| 是以血液和造血组织为主要研究对象的医学科学独立分支学科。\n放射免疫| 指| 简称放免，是利用同位素标记的与未标记的抗原同抗体发生竞争性抑制反应的放射性同位素体外微量分析方法。\n细胞遗传学| 指| 从细胞学的角度，特别是从染色体的结构和功能，以及染色体和其他细胞器的关系来研究遗传现象，阐明遗传和变异的机制。\n核酸| 指| 许多核苷酸聚合成的生物大分子化合物，为生命的最基本物质之一。根据化学组成不同，核酸可分为核糖核酸（简称RNA）和脱氧核糖核酸（简称DNA）。\n流式细胞技术| 指| Flow Cytometry,FCM，是利用流式细胞仪进行的一种单细胞定量分析和分选技术。\n高通量测序/二代测序、 NGS| 指| Next Generation\n",
+            "metadata": {
+                "title": "金域医学:2020年年度报告",
+                "headers": {
+                    "Header_1": "第一节 释义",
+                    "Header_2": "一、 释义"
+                },
+                "announcement_date": "2021-04-20",
+                "company_name": "广州金域医学检验集团股份有限公司",
+                "company_abbreviation": "金域医学",
+                "start_time": "2020-01-01 00:00:00",
+                "end_time": "2020-12-31 23:59:59",
+                "type": "年度报告"
+            },
+            "rerank_score": 0.037965084246575354,
+            "source": "milvus_ann_cninfo_csi800",
+            "expand_abs": "广州金域医学检验集团股份有限公司：金域医学:2019年年度报告\n# 第一节 释义\n## 一、 释义\nCLIA），是将具有高灵敏度的化学发光测定技术与高特异性的免疫反应相结合，用于各种抗原、半抗原、抗体、激素、酶、脂肪酸、维生素和药物等的检测分析技术。\n免疫检验| 指| 利用免疫学技术的检验，免疫学指研究生物体对抗原物质免疫应答性及其方法的生物-医学科学。\n综合检验| 指| 公司主营业务收入分类中，除理化、质谱检验、基因组学检验、病理诊断、生化发光检验、免疫检验之外的其他检验项目。\nNIPT| 指| Non-invasive Prenatal\nTesting，无创产前基因检测，是一种DNA测序技术，可对母体外周血浆中的游离DNA片段（包含胎儿游离DNA）进行测序，并将测序结果进行生物信息分析，可以从中得到胎儿的遗传信息。\n血液学| 指| 是以血液和造血组织为主要研究对象的医学科学独立分支学科。\n放射免疫| 指| 简称放免，是利用同位素标记的与未标记的抗原同抗体发生竞争性抑制反应的放射性同位素体外微量分析方法。\n细胞遗传学| 指| 从细胞学的角度, 特别是从染色体的结构和功能, 以及染色体和其他细胞器的关系来研究遗传现象, 阐明遗传和变异的机制。\n核酸| 指| 许多核苷酸聚合成的生物大分子化合物，为生命的最基本物质之一。根据化学组成不同，核酸可分为核糖核酸（简称RNA）和脱氧核糖核酸（简称DNA）。\n流式细胞技术| 指| Flow Cytometry, FCM，是利用流式细胞仪进行的一种单细胞定量分析和分选技术。\n高通量测序/二代测序、 NGS| 指| Next Generation\n\nSequencing，是通过模板DNA分子的化学修饰，将其锚定在纳米孔或微载体芯片上，利用碱基互补配对原理，在DNA聚合酶链反应或DNA连接酶反应过程中，通过采集荧光标记信号或化学反应信号，实现碱基序列的解读，一次性可完成几十万至上百万条序列的测定。\n荧光原位杂交| 指| Fluorescence in situ\n\nhybridization，FISH，是在放射性原位杂交技术的基础上发展起来的一种非放射性分子细胞遗传技术，以荧光标记取代同位素标记而形成的一种新的原位杂交方法。\n数字病理远程会诊| 指|\n将传统切片利用集成显微影像处理、Web图像浏览等技术进行数字化处理，，整合多年的病理领域经验、专家资源。为广大病理医生与患者，提供便捷、省时、省力与快速的专家咨询服务。\nLAM疾病| 指| 淋巴管肌瘤病(Lymphangioleio-myomatosis, LAM),一种罕见疾病\n\n",
+            "time_score": -1.0534246575342465
+        }
+    ],
+    "time": {
+        "milvus_ann_cninfo_csi800_time": 130.85365295410156,
+        "es_ann_cninfo_csi800_time": 159.44862365722656,
+        "rerank_time": 0.21982192993164062
+    }
+}
