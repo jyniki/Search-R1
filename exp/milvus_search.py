@@ -6,7 +6,6 @@ def search(query: str, topk: int = 3):
 
     payload = {
         "query": query,
-        "topk": topk,
         "search_params": {
             "translate": False,
             "milvus": {"name": ["ann_cninfo_csi800"], "num": 5, "expand_num": 1},
@@ -24,7 +23,7 @@ def search(query: str, topk: int = 3):
         print(f"Error: {e}")
         result = []
 
-    return _passages2string(result)
+    return _passages2string(result[:topk])
 
 
 def _passages2string(retrieval_result):
@@ -39,4 +38,4 @@ def _passages2string(retrieval_result):
 
 
 if __name__ == "__main__":
-    print(search("寒武纪2024年的业绩预期是多少"))
+    print(search("五粮液2024年的业绩预期是多少"))
