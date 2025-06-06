@@ -24,11 +24,9 @@ import json
 import re
 import random
 import time
+import requests
 from typing import Optional
-from openai import OpenAI
-
-deepseek_api_key = "sk-9b455fee69344119b6c759ea4fd8dc38"
-client = OpenAI(api_key=deepseek_api_key, base_url="https://api.deepseek.com")
+from exp.settings import LLM_URL
 
 
 def llm_score(prediction, golden_answer):
@@ -48,28 +46,32 @@ def llm_score(prediction, golden_answer):
     "score": 0 or 0.5 or 1
 }}
 """
-    response = client.chat.completions.create(
-        model="deepseek-chat",
-        messages=[
+    payload = {
+        "model": "gpt-4.1",
+        "messages": [
             {"role": "system", "content": "You are a helpful assistant"},
             {"role": "user", "content": prompt},
         ],
-        stream=False,
-        response_format={"type": "json_object"},
+        "stream": False,
+        "response_format": {"type": "json_object"},
+    }
+    response = requests.post(
+        LLM_URL,
+        json=payload,
+        headers={"Authorization": "Basic cnQtdXNlcjoxa3NaUjkzWg=="},
     )
-
-    return json.loads(response.choices[0].message.content)
+    return json.loads(response.json()["choices"][0]["message"]["content"])
 
 
 def em_check(prediction, golden_answer):
     max_retries = 3
     retry_delay = 1
-    start_time = time.time()
+    # start_time = time.time()
     for attempt in range(max_retries):
         try:
             score = float(llm_score(prediction, golden_answer)["score"])
-            end_time = time.time()
-            print(f"LLM Server Time: {end_time - start_time} s")
+            # end_time = time.time()
+            # print(f"LLM Server Time: {end_time - start_time} s")
             return score
         except Exception as e:
             print(f"Attempt {attempt + 1}/{max_retries} failed: {e}")

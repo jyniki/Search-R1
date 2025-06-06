@@ -2,7 +2,8 @@
 import sys
 import pandas as pd
 
-data_path = "/rt-vepfs/jy/dataset/nq_data/nq_hotpotqa/train.parquet"
+# data_path = "/rt-vepfs/jy/dataset/nq_data/nq_hotpotqa/train.parquet"
+data_path = "exp/dataset/train.parquet"
 df = pd.read_parquet(data_path)
 print("Columns:", df.columns.tolist())
 print("Shape:", df.shape)

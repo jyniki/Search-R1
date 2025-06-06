@@ -1,15 +1,14 @@
 import requests
+from exp.settings import SEARCH_URL
 
 
 def search(query: str, topk: int = 3):
-    SEARCH_URL = "http://106.75.245.178:7654/mix_search"
-
     payload = {
         "query": query,
         "search_params": {
             "translate": False,
-            "milvus": {"name": ["ann_cninfo_csi800"], "num": 5, "expand_num": 1},
-            "es": {"name": ["ann_cninfo_csi800"], "num": 5, "expand_num": 1},
+            "milvus": {"name": ["ann_cninfo_csi800"], "num": 5, "expand_num": 0},
+            "es": {"name": ["ann_cninfo_csi800"], "num": 5, "expand_num": 0},
         },
     }
     try:
@@ -29,9 +28,9 @@ def search(query: str, topk: int = 3):
 def _passages2string(retrieval_result):
     format_reference = ""
     for idx, doc_item in enumerate(retrieval_result):
-        content = doc_item["expand_abs"]
+        content = doc_item["abs"]
         title = content.split("\n")[0]
-        text = "".join(content.split("\n")[1:]).replace(f"{title}\n", "")
+        text = "".join(content.split("\n")[1:])
         format_reference += f"Doc {idx+1}:\nTitle: ({title})\n{text}\n"
 
     return format_reference

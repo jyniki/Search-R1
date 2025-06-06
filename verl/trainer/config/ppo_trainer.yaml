@@ -146,6 +146,7 @@ reward_model:
   retrieval_score: 0
 
 retriever:
+  search_engine: serp
   url: "http://127.0.0.1:8000/retrieve"
   topk: 3
 

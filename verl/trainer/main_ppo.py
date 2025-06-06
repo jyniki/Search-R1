@@ -33,7 +33,8 @@ def _select_rm_score_fn(data_source):
         "musique",
         "bamboogle",
     ]:
-        # return qa_em.compute_score_em
+        return qa_em.compute_score_em
+    elif data_source in ["a800"]:
         return qa_em_llm.compute_score_em
     else:
         raise NotImplementedError
