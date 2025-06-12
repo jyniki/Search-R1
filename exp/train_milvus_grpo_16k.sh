@@ -2,25 +2,26 @@ export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
 export DATA_DIR='exp/dataset'
 
 WAND_PROJECT='Search-R1'
-export WANDB_API_KEY=local-cc3446e3021d25de41e2aab6a2ad846ad77e5170
+
 export BASE_MODEL='/rt-vepfs/public_model/Qwen/Qwen2.5-7B'
 export EXPERIMENT_NAME=search-r1-grpo-qwen2.5-7b-em-a800
 
-# max_prompt_length = max_start_length + max_response_length * (max_turns - 1) + max_obs_length * max_turns
-# = 1024 + 512 * (3 - 1) + 2048 * 3 = 8192
+# max_prompt_length = 
+# max_start_length + max_response_length * (max_turns - 1) 
+# + max_obs_length * max_turns
+# = 2048 + 512 * (5 - 1) + 2048 * 5 = 16384
 
 # set -x
 export VLLM_ATTENTION_BACKEND=XFORMERS 
-export HYDRA_FULL_ERROR=1
 
 PYTHONUNBUFFERED=1 python3 -m verl.trainer.main_ppo \
     data.train_files=$DATA_DIR/train.parquet \
     data.val_files=$DATA_DIR/test.parquet \
     data.train_batch_size=64 \
     data.val_batch_size=8 \
-    data.max_prompt_length=8192 \
+    data.max_prompt_length=16384 \
     data.max_response_length=512 \
-    data.max_start_length=1024 \
+    data.max_start_length=2048 \
     data.max_obs_length=2048 \
     data.shuffle_train_dataloader=True \
     algorithm.adv_estimator=grpo \
@@ -47,7 +48,7 @@ PYTHONUNBUFFERED=1 python3 -m verl.trainer.main_ppo \
     actor_rollout_ref.rollout.n_agent=5 \
     actor_rollout_ref.rollout.temperature=1 \
     actor_rollout_ref.actor.state_masking=true \
-    actor_rollout_ref.actor.ulysses_sequence_parallel_size=1 \
+    actor_rollout_ref.actor.ulysses_sequence_parallel_size=4 \
     +trainer.val_only=false \
     +trainer.val_before_train=true \
     trainer.n_gpus_per_node=8 \
@@ -55,7 +56,7 @@ PYTHONUNBUFFERED=1 python3 -m verl.trainer.main_ppo \
     trainer.save_freq=10 \
     trainer.test_freq=10 \
     trainer.project_name=$WAND_PROJECT \
-    trainer.logger=["wandb"] \
+    trainer.logger=["console"] \
     trainer.experiment_name=$EXPERIMENT_NAME \
     trainer.total_epochs=100 \
     trainer.total_training_steps=1005 \
