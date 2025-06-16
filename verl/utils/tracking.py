@@ -42,6 +42,8 @@ class Tracking(object):
             WANDB_API_KEY = os.environ.get("WANDB_API_KEY", None)
             if WANDB_API_KEY:
                 wandb.login(key=WANDB_API_KEY)
+            else:
+                wandb.login(key="local-53aae1ff0fe0a8e244f483c5cb89d058c3704cc8")
             wandb.init(project=project_name, name=experiment_name, config=config)
             self.logger['wandb'] = wandb
 

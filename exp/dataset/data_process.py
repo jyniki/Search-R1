@@ -104,7 +104,7 @@ def convert_csv_to_parquet(csv_file_path, output_parquet_path):
 
 
 def main():
-    csv_file = "exp/dataset/test_a800.csv"
+    csv_file = "exp/dataset/a800.csv"
     output_dir = "exp/dataset"
 
     try:

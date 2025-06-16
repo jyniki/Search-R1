@@ -1,23 +1,24 @@
 export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
-export DATA_DIR='exp/dataset'
+export DATA_DIR='/rt-vepfs/xjl/Search-R1/exp/dataset'
 
 WAND_PROJECT='Search-R1'
-export WANDB_API_KEY=local-cc3446e3021d25de41e2aab6a2ad846ad77e5170
+export WANDB_API_KEY='local-53aae1ff0fe0a8e244f483c5cb89d058c3704cc8'
 export BASE_MODEL='/rt-vepfs/public_model/Qwen/Qwen2.5-7B'
 export EXPERIMENT_NAME=search-r1-grpo-qwen2.5-7b-em-a800
+export HYDRA_FULL_ERROR=1
 
 # max_prompt_length = max_start_length + max_response_length * (max_turns - 1) + max_obs_length * max_turns
 # = 1024 + 512 * (3 - 1) + 2048 * 3 = 8192
 
 # set -x
+# 先运行下面这行这个再启动 ray
 export VLLM_ATTENTION_BACKEND=XFORMERS 
-export HYDRA_FULL_ERROR=1
 
 PYTHONUNBUFFERED=1 python3 -m verl.trainer.main_ppo \
     data.train_files=$DATA_DIR/train.parquet \
     data.val_files=$DATA_DIR/test.parquet \
     data.train_batch_size=64 \
-    data.val_batch_size=8 \
+    data.val_batch_size=32 \
     data.max_prompt_length=8192 \
     data.max_response_length=512 \
     data.max_start_length=1024 \
@@ -51,7 +52,7 @@ PYTHONUNBUFFERED=1 python3 -m verl.trainer.main_ppo \
     +trainer.val_only=false \
     +trainer.val_before_train=true \
     trainer.n_gpus_per_node=8 \
-    trainer.nnodes=1 \
+    trainer.nnodes=4 \
     trainer.save_freq=10 \
     trainer.test_freq=10 \
     trainer.project_name=$WAND_PROJECT \

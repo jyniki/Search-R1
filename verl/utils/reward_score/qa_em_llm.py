@@ -1,3 +1,4 @@
+
 """
 Author: JiangYu
 Email: 1067087283@qq.com
@@ -24,10 +25,11 @@ import json
 import re
 import random
 import time
+import datetime
 import requests
 from typing import Optional
-from exp.settings import LLM_URL
-
+from exp.settings import LLM_URL, LLM_API_KEY
+call_cnt = 0
 
 def llm_score(prediction, golden_answer):
     prompt = f"""
@@ -58,7 +60,7 @@ def llm_score(prediction, golden_answer):
     response = requests.post(
         LLM_URL,
         json=payload,
-        headers={"Authorization": "Basic cnQtdXNlcjoxa3NaUjkzWg=="},
+        headers={"Authorization": f"Basic {LLM_API_KEY}"},
     )
     return json.loads(response.json()["choices"][0]["message"]["content"])
 
@@ -70,6 +72,10 @@ def em_check(prediction, golden_answer):
     for attempt in range(max_retries):
         try:
             score = float(llm_score(prediction, golden_answer)["score"])
+            global call_cnt
+            call_cnt += 1
+            with open("/rt-vepfs/xjl/Search-R1/outputs/call_cnt.txt", "a") as f:
+                f.write(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} 调用量+1，总调用次数：{call_cnt}\n")
             # end_time = time.time()
             # print(f"LLM Server Time: {end_time - start_time} s")
             return score
@@ -123,3 +129,4 @@ def compute_score_em(
     else:
         score = em_check(answer, ground_truth["target"])
     return score
+

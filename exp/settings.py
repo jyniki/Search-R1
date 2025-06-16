@@ -7,4 +7,5 @@ Description:
 """
 
 LLM_URL = "http://106.75.245.178:8600/v1/chat/completions"
+LLM_API_KEY = "cnQtdXNlcjoxa3NaUjkzWg=="
 SEARCH_URL = "http://106.75.245.178:7654/mix_search"
