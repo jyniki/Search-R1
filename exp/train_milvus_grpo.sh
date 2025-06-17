@@ -1,8 +1,8 @@
 export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
-export DATA_DIR='/rt-vepfs/xjl/Search-R1/exp/dataset'
+export DATA_DIR='exp/dataset'
 
 WAND_PROJECT='Search-R1'
-export WANDB_API_KEY='local-53aae1ff0fe0a8e244f483c5cb89d058c3704cc8'
+export WANDB_API_KEY=local-cc3446e3021d25de41e2aab6a2ad846ad77e5170
 export BASE_MODEL='/rt-vepfs/public_model/Qwen/Qwen2.5-7B'
 export EXPERIMENT_NAME=search-r1-grpo-qwen2.5-7b-em-a800
 export HYDRA_FULL_ERROR=1
@@ -11,7 +11,7 @@ export HYDRA_FULL_ERROR=1
 # = 1024 + 512 * (3 - 1) + 2048 * 3 = 8192
 
 # set -x
-# 先运行下面这行这个再启动 ray
+# 先运行下面这行这个再启动 ray !!!!
 export VLLM_ATTENTION_BACKEND=XFORMERS 
 
 PYTHONUNBUFFERED=1 python3 -m verl.trainer.main_ppo \

@@ -1,4 +1,3 @@
-
 """
 Author: JiangYu
 Email: 1067087283@qq.com
@@ -21,6 +20,7 @@ Description:
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 import json
 import re
 import random
@@ -29,7 +29,9 @@ import datetime
 import requests
 from typing import Optional
 from exp.settings import LLM_URL, LLM_API_KEY
+
 call_cnt = 0
+
 
 def llm_score(prediction, golden_answer):
     prompt = f"""
@@ -62,22 +64,23 @@ def llm_score(prediction, golden_answer):
         json=payload,
         headers={"Authorization": f"Basic {LLM_API_KEY}"},
     )
+    global call_cnt
+    call_cnt += 1
+    with open(
+        f"outputs/logs/{os.environ.get('EXPERIMENT_NAME', '')}_llm_call.log", "a"
+    ) as f:
+        f.write(
+            f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} 调用量+1，总调用次数：{call_cnt}\n"
+        )
     return json.loads(response.json()["choices"][0]["message"]["content"])
 
 
 def em_check(prediction, golden_answer):
     max_retries = 3
     retry_delay = 1
-    # start_time = time.time()
     for attempt in range(max_retries):
         try:
             score = float(llm_score(prediction, golden_answer)["score"])
-            global call_cnt
-            call_cnt += 1
-            with open("/rt-vepfs/xjl/Search-R1/outputs/call_cnt.txt", "a") as f:
-                f.write(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} 调用量+1，总调用次数：{call_cnt}\n")
-            # end_time = time.time()
-            # print(f"LLM Server Time: {end_time - start_time} s")
             return score
         except Exception as e:
             print(f"Attempt {attempt + 1}/{max_retries} failed: {e}")
@@ -129,4 +132,3 @@ def compute_score_em(
     else:
         score = em_check(answer, ground_truth["target"])
     return score
-

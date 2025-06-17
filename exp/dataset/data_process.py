@@ -92,7 +92,7 @@ def process_dataframe(df, split_name="train"):
 
 def convert_csv_to_parquet(csv_file_path, output_parquet_path):
     """
-    保留原有的单文件转换功能（向后兼容）
+    保留原有的单文件转换功能
     """
     df_csv = pd.read_csv(csv_file_path)
     data_list = process_dataframe(df_csv, split_name="train")
