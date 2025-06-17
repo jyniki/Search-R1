@@ -2,9 +2,10 @@ export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
 export DATA_DIR='exp/dataset'
 
 WAND_PROJECT='Search-R1'
-
+export WANDB_API_KEY=local-cc3446e3021d25de41e2aab6a2ad846ad77e5170
 export BASE_MODEL='/rt-vepfs/public_model/Qwen/Qwen2.5-7B'
 export EXPERIMENT_NAME=search-r1-grpo-qwen2.5-7b-em-a800
+export HYDRA_FULL_ERROR=1
 
 # max_prompt_length = 
 # max_start_length + max_response_length * (max_turns - 1) 
@@ -14,11 +15,13 @@ export EXPERIMENT_NAME=search-r1-grpo-qwen2.5-7b-em-a800
 # set -x
 export VLLM_ATTENTION_BACKEND=XFORMERS 
 
+MINI_BATCH_SIZE=256
+MICRO_BATCH_SIZE=32
 PYTHONUNBUFFERED=1 python3 -m verl.trainer.main_ppo \
     data.train_files=$DATA_DIR/train.parquet \
     data.val_files=$DATA_DIR/test.parquet \
-    data.train_batch_size=64 \
-    data.val_batch_size=8 \
+    data.train_batch_size=1024 \
+    data.val_batch_size=256 \
     data.max_prompt_length=16384 \
     data.max_response_length=512 \
     data.max_start_length=2048 \
@@ -31,16 +34,16 @@ PYTHONUNBUFFERED=1 python3 -m verl.trainer.main_ppo \
     actor_rollout_ref.actor.optim.lr=1e-6 \
     actor_rollout_ref.actor.optim.lr_warmup_steps_ratio=0.285 \
     actor_rollout_ref.actor.use_kl_loss=true \
-    actor_rollout_ref.actor.ppo_mini_batch_size=64 \
-    actor_rollout_ref.actor.ppo_micro_batch_size=32 \
+    actor_rollout_ref.actor.ppo_mini_batch_size=$MINI_BATCH_SIZE \
+    actor_rollout_ref.actor.ppo_micro_batch_size=$MICRO_BATCH_SIZE \
     actor_rollout_ref.actor.fsdp_config.param_offload=true \
     actor_rollout_ref.actor.fsdp_config.grad_offload=true \
     actor_rollout_ref.actor.fsdp_config.optimizer_offload=true \
-    actor_rollout_ref.rollout.log_prob_micro_batch_size=32 \
+    actor_rollout_ref.rollout.log_prob_micro_batch_size=$MICRO_BATCH_SIZE \
     actor_rollout_ref.rollout.tensor_model_parallel_size=1 \
     actor_rollout_ref.rollout.name=vllm \
     actor_rollout_ref.rollout.gpu_memory_utilization=0.6 \
-    actor_rollout_ref.ref.log_prob_micro_batch_size=32 \
+    actor_rollout_ref.ref.log_prob_micro_batch_size=$MICRO_BATCH_SIZE \
     actor_rollout_ref.ref.fsdp_config.param_offload=True \
     actor_rollout_ref.actor.kl_loss_coef=0.001 \
     actor_rollout_ref.actor.kl_loss_type=low_var_kl \
@@ -56,7 +59,7 @@ PYTHONUNBUFFERED=1 python3 -m verl.trainer.main_ppo \
     trainer.save_freq=10 \
     trainer.test_freq=10 \
     trainer.project_name=$WAND_PROJECT \
-    trainer.logger=["console"] \
+    trainer.logger=["wandb"] \
     trainer.experiment_name=$EXPERIMENT_NAME \
     trainer.total_epochs=100 \
     trainer.total_training_steps=1005 \
