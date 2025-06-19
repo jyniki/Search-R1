@@ -28,7 +28,7 @@ import time
 import datetime
 import requests
 from typing import Optional
-from exp.settings import LLM_URL, LLM_API_KEY
+from exp.settings import LLM_URL, LLM_API_KEY, LLM_CALL_CNT_LOG
 call_cnt = 0
 
 def llm_score(prediction, golden_answer):
@@ -74,8 +74,8 @@ def em_check(prediction, golden_answer):
             score = float(llm_score(prediction, golden_answer)["score"])
             global call_cnt
             call_cnt += 1
-            with open("/rt-vepfs/xjl/Search-R1/outputs/call_cnt.txt", "a") as f:
-                f.write(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} 调用量+1，总调用次数：{call_cnt}\n")
+            with open(LLM_CALL_CNT_LOG, "w") as f:
+                f.write(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} 总调用次数：{call_cnt}")
             # end_time = time.time()
             # print(f"LLM Server Time: {end_time - start_time} s")
             return score

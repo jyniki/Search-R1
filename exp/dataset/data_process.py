@@ -29,13 +29,13 @@ def convert_csv_to_parquet_with_split(
 
     train_data_list = process_dataframe(train_df, split_name="train")
     train_parquet = pd.DataFrame(train_data_list)
-    train_output_path = os.path.join(output_dir, "train.parquet")
+    train_output_path = os.path.join(output_dir, "test_train.parquet")
     train_parquet.to_parquet(train_output_path, engine="pyarrow", index=False)
     print(f"训练集已保存到: {train_output_path}")
 
     test_data_list = process_dataframe(test_df, split_name="test")
     test_parquet = pd.DataFrame(test_data_list)
-    test_output_path = os.path.join(output_dir, "test.parquet")
+    test_output_path = os.path.join(output_dir, "test_test.parquet")
     test_parquet.to_parquet(test_output_path, engine="pyarrow", index=False)
     print(f"测试集已保存到: {test_output_path}")
 
@@ -104,7 +104,7 @@ def convert_csv_to_parquet(csv_file_path, output_parquet_path):
 
 
 def main():
-    csv_file = "exp/dataset/a800.csv"
+    csv_file = "exp/dataset/test_a800.csv"
     output_dir = "exp/dataset"
 
     try:

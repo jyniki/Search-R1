@@ -23,7 +23,7 @@ from contextlib import contextmanager
 from dataclasses import dataclass, field
 from enum import Enum
 from pprint import pprint
-from typing import Type, Dict
+from typing import Type, Dict, List
 
 import re
 import json
@@ -50,6 +50,7 @@ from verl.utils.seqlen_balancing import (
     log_seqlen_unbalance,
 )
 from verl.utils.dataset.rl_dataset import collate_fn
+from verl.utils.response_checker import error_response, contains_answer
 
 import re
 from search_r1.llm_agent.generation import LLMGenerationManager, GenerationConfig
@@ -1252,6 +1253,15 @@ class RayPPOTrainer(object):
         )
         metrics.update(global_balance_stats)
 
+    def compute_response_quality_metrics(self, responses_str: List[str]) -> dict:
+        """Compute response quality metrics."""
+        contains_answer_list = [contains_answer(response) for response in responses_str]
+        error_answer_list = [error_response(response) for response in responses_str]
+        return {
+            "response_quality/finish_ratio": len(contains_answer_list) / len(responses_str),
+            "response_quality/error_ratio": len(error_answer_list) / len(responses_str),
+        }
+
     def fit(self, resume_from_checkpoint: str = None):
         """
         The training loop of PPO.
@@ -1527,6 +1537,11 @@ class RayPPOTrainer(object):
                 )
                 metrics.update(
                     compute_timing_metrics(batch=batch, timing_raw=timing_raw)
+                )
+
+                responses_str = self.tokenizer.batch_decode(batch.batch["responses"], skip_special_tokens=True)
+                metrics.update(
+                    self.compute_response_quality_metrics(responses_str)
                 )
 
                 # TODO: make a canonical logger that supports various backend

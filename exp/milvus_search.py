@@ -1,5 +1,5 @@
 import requests
-from exp.settings import SEARCH_URL
+from exp.settings import SEARCH_URL, SEARCH_ERROR_LOG
 
 
 def search(query: str, topk: int = 3):
@@ -20,6 +20,8 @@ def search(query: str, topk: int = 3):
         result = response.json()["result"]
     except Exception as e:
         print(f"Error: {e}")
+        with open(SEARCH_ERROR_LOG, "a") as f:
+            f.write(f"查询失败: {query}\n")
         result = []
 
     return _passages2string(result[:topk])
