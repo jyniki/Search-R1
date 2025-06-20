@@ -1258,8 +1258,8 @@ class RayPPOTrainer(object):
         contains_answer_list = [contains_answer(response) for response in responses_str]
         error_answer_list = [error_response(response) for response in responses_str]
         return {
-            "response_quality/finish_ratio": len(contains_answer_list) / len(responses_str),
-            "response_quality/error_ratio": len(error_answer_list) / len(responses_str),
+            "response_quality/finish_ratio": float(sum(contains_answer_list)) / len(responses_str),
+            "response_quality/error_ratio": float(sum(error_answer_list)) / len(responses_str),
         }
 
     def fit(self, resume_from_checkpoint: str = None):
