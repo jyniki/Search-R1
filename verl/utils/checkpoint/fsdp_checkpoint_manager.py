@@ -161,7 +161,6 @@ class FSDPCheckpointManager(BaseCheckpointManager):
         local_path = self.local_mkdir(local_path)
         torch.distributed.barrier()
 
-        # every rank will save its own model and optim shard
         state_dict_cfg = ShardedStateDictConfig(offload_to_cpu=True)
         optim_cfg = ShardedOptimStateDictConfig(offload_to_cpu=True)
         with warnings.catch_warnings():
@@ -187,9 +186,15 @@ class FSDPCheckpointManager(BaseCheckpointManager):
                     local_path,
                     f"model_world_size_{self.world_size}_rank_{self.rank}.pt",
                 )
+                print(
+                    f"[rank-{self.rank}]: Saving model shard to {os.path.abspath(model_path)}"
+                )
                 optim_path = os.path.join(
                     local_path,
                     f"optim_world_size_{self.world_size}_rank_{self.rank}.pt",
+                )
+                print(
+                    f"[rank-{self.rank}]: Saving optimizer shard to {os.path.abspath(optim_path)}"
                 )
                 extra_path = os.path.join(
                     local_path,
@@ -197,18 +202,10 @@ class FSDPCheckpointManager(BaseCheckpointManager):
                 )
 
                 print(
-                    f"[rank-{self.rank}]: Saving model to {os.path.abspath(model_path)}"
-                )
-                print(
-                    f"[rank-{self.rank}]: Saving checkpoint to {os.path.abspath(model_path)}"
-                )
-                print(
                     f"[rank-{self.rank}]: Saving extra_state to {os.path.abspath(extra_path)}"
                 )
                 torch.save(model_state_dict, model_path)
-                torch.save(
-                    optimizer_state_dict, optim_path
-                )  # TODO: address optimizer is None
+                torch.save(optimizer_state_dict, optim_path)
                 torch.save(extra_state_dict, extra_path)
 
         if "hf_model" in self.checkpoint_contents:

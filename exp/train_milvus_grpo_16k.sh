@@ -69,7 +69,7 @@ PYTHONUNBUFFERED=1 python3 -m verl.trainer.main_ppo \
     trainer.resume_from_checkpoint=null \
     trainer.checkpoint_cleanup=True \
     trainer.max_checkpoints_to_keep=5 \
-    max_turns=3 \
+    max_turns=5 \
     retriever.search_engine=milvus \
     retriever.topk=3 \
     2>&1 | tee outputs/logs/$EXPERIMENT_NAME.log

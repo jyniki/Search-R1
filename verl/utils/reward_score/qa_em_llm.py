@@ -20,7 +20,6 @@ Description:
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
 import json
 import re
 import random
@@ -66,10 +65,8 @@ def llm_score(prediction, golden_answer):
     )
     global call_cnt
     call_cnt += 1
-    with open(
-        f"outputs/logs/{os.environ.get('EXPERIMENT_NAME', '')}_llm_call.log", "a"
-    ) as f:
-        f.write(
+    if call_cnt % 100 == 0:
+        print(
             f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} 调用量+1，总调用次数：{call_cnt}\n"
         )
     return json.loads(response.json()["choices"][0]["message"]["content"])
