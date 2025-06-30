@@ -9,3 +9,7 @@ Description:
 LLM_URL = "http://106.75.245.178:4000/v1/chat/completions"
 LLM_API_KEY = "sk-z6gZt-213cdrE1eCJnW6og"
 SEARCH_URL = "http://106.75.245.178:7654/mix_search"
+
+# logs
+LLM_CALL_CNT_LOG = "outputs/llm_call_cnt_7b.txt"
+SEARCH_ERROR_LOG = "outputs/search_error_log_7b.txt"

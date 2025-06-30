@@ -27,8 +27,7 @@ import time
 import datetime
 import requests
 from typing import Optional
-from exp.settings import LLM_URL, LLM_API_KEY
-
+from exp.settings import LLM_URL, LLM_API_KEY, LLM_CALL_CNT_LOG
 call_cnt = 0
 
 
@@ -66,9 +65,8 @@ def llm_score(prediction, golden_answer):
     global call_cnt
     call_cnt += 1
     if call_cnt % 100 == 0:
-        print(
-            f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} 总调用次数：{call_cnt}\n"
-        )
+        with open(LLM_CALL_CNT_LOG, "w") as f:
+            f.write(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} 总调用次数：{call_cnt}")
     return json.loads(response.json()["choices"][0]["message"]["content"])
 
 
