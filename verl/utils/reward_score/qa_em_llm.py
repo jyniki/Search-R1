@@ -67,7 +67,7 @@ def llm_score(prediction, golden_answer):
     call_cnt += 1
     if call_cnt % 100 == 0:
         print(
-            f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} 调用量+1，总调用次数：{call_cnt}\n"
+            f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} 总调用次数：{call_cnt}\n"
         )
     return json.loads(response.json()["choices"][0]["message"]["content"])
 
