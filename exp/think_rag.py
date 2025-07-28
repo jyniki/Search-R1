@@ -11,6 +11,7 @@ import torch
 import re
 from exp.milvus_search import search
 
+LOG_FILE = "/rt-vepfs/xjl/Search-R1/exp/eval/llama3.1-sft-5.txt"
 
 class StopOnSequence(transformers.StoppingCriteria):
     def __init__(self, target_sequences, tokenizer):
@@ -43,15 +44,15 @@ class StopOnSequence(transformers.StoppingCriteria):
 class ThinkRAG:
     def __init__(self, model_id):
         self.prompt_template = """回答给定的问题。\
-每次获得新信息时，你必须先在<think>推理过程</think>之间进行推理。\
+你必须先在<think>推理过程</think>之间进行推理。\
 推理过程中的数据应该权威可靠，不要编造数据。\
-推理后，如果你发现缺乏某些知识，你可以通过<search>中文query</search>调用搜索引擎，在<information>搜索结果</information>之间返回最相关的搜索结果。\
-你可以根据需要搜索多次。\
-如果你发现不需要更多外部知识，你可以直接在<answer>和</answer>之间提供答案，无需详细说明。问题：{question}\n"""
+推理后，如果你发现缺乏某些知识，你可以通过<search>中文query</search>调用搜索引擎，我将在<information>搜索结果</information>之间返回最相关的搜索结果。不要编造information中的内容。\
+如果你发现不需要更多外部知识，你可以直接在<answer>和</answer>之间提供答案，无需详细说明。\
+你的回答应该有且只有两种形式，要么是<think>推理过程</think><search>中文query</search>，要么是<think>推理过程</think><answer>答案</answer> 问题：{question}\n"""
 
         self.curr_eos = [151645, 151643]  # for Qwen2.5 series models
         self.curr_search_template = (
-            "\n\n{output_text}<information>{search_results}</information>\n\n"
+            "\n\n<information>{search_results}</information>\n\n"
         )
 
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -69,6 +70,18 @@ class ThinkRAG:
             " </search>\n",
             "</search>\n\n",
             " </search>\n\n",
+        ]
+        target_sequences += [
+            "</answer>",
+            ".</answer>",
+            "。</answer>",
+            "</answer> ",
+            "</answer>	",
+            " </answer>",
+            "</answer>\n",
+            " </answer>\n",
+            "</answer>\n\n",
+            " </answer>\n\n",
         ]
         stopping_criteria = transformers.StoppingCriteriaList(
             [StopOnSequence(target_sequences, self.tokenizer)]
@@ -103,14 +116,16 @@ class ThinkRAG:
         print(
             "\n\n################# [Start Reasoning + Searching] ##################\n\n"
         )
-        print(prompt)
+        print("prompt: " + prompt)
+        with open(LOG_FILE, "a") as f:
+            f.write("\n\n################# [Start Reasoning + Searching] ##################\n\n")
+            f.write("prompt: " + prompt + "\n")
         # Encode the chat-formatted prompt and move it to the correct device
         while cnt < max_turn:
             input_ids = self.tokenizer.encode(prompt, return_tensors="pt").to(
                 self.device
             )
             attention_mask = torch.ones_like(input_ids)
-
             # Generate text with the stopping criteria
             outputs = self.model.generate(
                 input_ids,
@@ -125,24 +140,31 @@ class ThinkRAG:
             output_text = self.tokenizer.decode(
                 generated_tokens, skip_special_tokens=True
             )
-            print(output_text)
+            print("output: " + output_text)
+            with open(LOG_FILE, "a") as f:
+                f.write("output: " + output_text + "\n")
             if outputs[0][-1].item() in self.curr_eos:
-                return prompt + output_text
-
+                return output_text
+            if "<answer>" in output_text and "</answer>" in output_text:
+                return output_text
             search_query = self.get_query(
                 self.tokenizer.decode(outputs[0], skip_special_tokens=True)
             )
             if search_query:
                 print(f'searching "{search_query}"...')
+                with open(LOG_FILE, "a") as f:
+                    f.write(f'searching "{search_query}"...\n')
                 search_results = search(search_query)
             else:
                 search_results = ""
 
             search_text = self.curr_search_template.format(
-                output_text=output_text, search_results=search_results
+                search_results=search_results
             )
             print(search_text)
+            with open(LOG_FILE, "a") as f:
+                f.write(search_text + "\n")
             prompt += search_text
             cnt += 1
 
-        return prompt
+        return prompt[-1]

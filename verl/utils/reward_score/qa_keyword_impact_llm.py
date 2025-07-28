@@ -6,7 +6,7 @@ import time
 import datetime
 import requests
 from typing import Optional
-from exp.settings import LLM_URL, LLM_API_KEY, LLM_CALL_CNT_LOG
+from exp.settings import LLM_URL, LLM_API_KEY
 call_cnt = 0
 
 def keyword_impact_llm_score(question, keyword):

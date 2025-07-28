@@ -56,7 +56,7 @@ def process_dataframe(df, split_name="train"):
         prompt_content = f"""回答给定的问题。\
 每次获得新信息时，你必须先在<think>推理过程</think>之间进行推理。\
 推理过程中的数据应该权威可靠，不要编造数据。\
-推理后，如果你发现缺乏某些知识，你可以通过<search>中文query</search>调用搜索引擎，在<information>搜索结果</information>之间返回最相关的搜索结果。\
+推理后，如果你发现缺乏某些知识，你可以通过<search>中文query</search>调用搜索引擎，我将在<information>搜索结果</information>之间返回最相关的搜索结果。\
 你可以根据需要搜索多次。\
 如果你发现不需要更多外部知识，你可以直接在<answer>和</answer>之间提供答案，无需详细说明。问题：{row['问题']}\n"""
 

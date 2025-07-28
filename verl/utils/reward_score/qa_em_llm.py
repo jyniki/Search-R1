@@ -28,8 +28,8 @@ import time
 import datetime
 import requests
 from typing import Optional
-from exp.settings import LLM_URL, LLM_API_KEY, LLM_CALL_CNT_LOG
-call_cnt = 0
+from exp.settings import LLM_URL, LLM_API_KEY
+
 
 def llm_score(question, prediction, golden_answer):
     prompt = f"""
@@ -76,12 +76,6 @@ def em_check(question, prediction, golden_answer):
     for attempt in range(max_retries):
         try:
             score = float(llm_score(question, prediction, golden_answer)["score"])
-            global call_cnt
-            call_cnt += 1
-            with open(LLM_CALL_CNT_LOG, "w") as f:
-                f.write(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} 总调用次数：{call_cnt}")
-            # end_time = time.time()
-            # print(f"LLM Server Time: {end_time - start_time} s")
             return score
         except Exception as e:
             print(f"Attempt {attempt + 1}/{max_retries} failed: {e}")
@@ -100,8 +94,8 @@ def extract_solution(solution_str) -> Optional[str]:
     answer_pattern = r"<answer>(.*?)</answer>"
     match = re.finditer(answer_pattern, solution_str, re.DOTALL)
     matches = list(match)
-
-    if len(matches) <= 1:
+    
+    if len(matches) < 1:
         return None
 
     return matches[-1].group(1).strip()

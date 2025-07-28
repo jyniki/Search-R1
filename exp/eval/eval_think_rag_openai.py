@@ -8,9 +8,10 @@ Description:
 
 import pandas as pd
 from tqdm import tqdm
+import json
 import sys
-from exp.think_rag import ThinkRAG, LOG_FILE
-from verl.utils.reward_score.qa_em_llm import extract_solution, em_check
+from exp.think_rag_openai import ThinkRAGOpenAI as ThinkRAG, extract_query
+from verl.utils.reward_score.qa_em_llm import llm_score, extract_solution
 import argparse
 
 
@@ -34,6 +35,7 @@ import argparse
 # df.to_csv("exp/eval/eval_a800_think_rag_32b_320-steps.csv", index=False)
 
 
+
 def main():
     # Set up argument parser
     parser = argparse.ArgumentParser(description="Evaluate ThinkRAG model on a test dataset")
@@ -43,9 +45,9 @@ def main():
                        help="Path to the input CSV file")
     parser.add_argument("--output_csv", type=str, required=True,
                        help="Path to save the output CSV file")
-    parser.add_argument("--question_col", type=str, default="question",
+    parser.add_argument("--question_col", type=str, default="问题",
                        help="Column name for questions in the input CSV")
-    parser.add_argument("--answer_col", type=str, default="golden_answers",
+    parser.add_argument("--answer_col", type=str, default="答案",
                        help="Column name for answers in the input CSV")
     
     args = parser.parse_args()
@@ -61,19 +63,39 @@ def main():
     df["score"] = None
 
     print(f"Using model: {args.model_id}")
-    max_retries = 3
 
     # Process each row
     for index, row in tqdm(df.iterrows(), total=len(df), desc="Think RAG"):
         question = row[args.question_col]
-        answer = think_rag.get_search_results(question)
-        score = em_check(question, extract_solution(answer), row[args.answer_col])
-        print(f"score: {score}")
-        with open(LOG_FILE, "a") as f:
-            f.write(f"score: {score}\n\n")
+        try:
+            solution = json.loads(think_rag.get_search_results(question))
+        except:
+            continue
+        query = None
+        info = None
+        answer = None
+
+        for msg in solution:
+            if query is not None and info is not None and answer is not None:
+                break
+            if msg['role'] == 'assistant' and '<search>' in msg['content']:
+                query = msg['content']
+            if msg['role'] == 'user' and '<information>' in msg['content']:
+                info = msg['content']
+            if msg['role'] == 'assistant' and '<answer>' in msg['content']:
+                answer = msg['content']
+        
+        if answer is None:
+            continue
+        
+        score = llm_score(question, extract_solution(answer), row[args.answer_col])
+
+        # score = compute_score_em(solution_str, ground_truth={"target": row[args.answer_col]})
+        df.at[index, "query"] = query
+        df.at[index, "info"] = info
         df.at[index, "llm_answer"] = answer
         df.at[index, "score"] = score
-        df.to_csv(args.output_csv, index=False)
+
     # Save results
     df.to_csv(args.output_csv, index=False)
     print(f"Results saved to {args.output_csv}")

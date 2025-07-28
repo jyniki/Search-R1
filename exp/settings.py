@@ -11,5 +11,4 @@ LLM_API_KEY = "sk-z6gZt-213cdrE1eCJnW6og"
 SEARCH_URL = "http://106.75.245.178:7654/mix_search"
 
 # logs
-LLM_CALL_CNT_LOG = "/rt-vepfs/xjl/Search-R1/outputs/llm_call_cnt_7b.txt"
 SEARCH_ERROR_LOG = "/rt-vepfs/xjl/Search-R1/outputs/search_error_log_7b.txt"
