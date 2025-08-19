@@ -29,13 +29,13 @@ def convert_csv_to_parquet_with_split(
 
     train_data_list = process_dataframe(train_df, split_name="train")
     train_parquet = pd.DataFrame(train_data_list)
-    train_output_path = os.path.join(output_dir, "test_train.parquet")
+    train_output_path = os.path.join(output_dir, "train.parquet")
     train_parquet.to_parquet(train_output_path, engine="pyarrow", index=False)
     print(f"训练集已保存到: {train_output_path}")
 
     test_data_list = process_dataframe(test_df, split_name="test")
     test_parquet = pd.DataFrame(test_data_list)
-    test_output_path = os.path.join(output_dir, "test_test.parquet")
+    test_output_path = os.path.join(output_dir, "test.parquet")
     test_parquet.to_parquet(test_output_path, engine="pyarrow", index=False)
     print(f"测试集已保存到: {test_output_path}")
 
@@ -56,7 +56,7 @@ def process_dataframe(df, split_name="train"):
         prompt_content = f"""回答给定的问题。\
 每次获得新信息时，你必须先在<think>推理过程</think>之间进行推理。\
 推理过程中的数据应该权威可靠，不要编造数据。\
-推理后，如果你发现缺乏某些知识，你可以通过<search>中文query</search>调用搜索引擎，在<information>搜索结果</information>之间返回最相关的搜索结果。\
+推理后，如果你发现缺乏某些知识，你可以通过<search>中文query</search>调用搜索引擎，我将在<information>搜索结果</information>之间返回最相关的搜索结果。\
 你可以根据需要搜索多次。\
 如果你发现不需要更多外部知识，你可以直接在<answer>和</answer>之间提供答案，无需详细说明。问题：{row['问题']}\n"""
 
@@ -71,7 +71,7 @@ def process_dataframe(df, split_name="train"):
             "style": "rule",
         }
 
-        extra_info = {"index": idx, "split": split_name}
+        extra_info = {"index": idx, "split": split_name, "question": row["问题"]}
 
         data_row = {
             "id": f"{split_name}_{idx}",
@@ -104,7 +104,7 @@ def convert_csv_to_parquet(csv_file_path, output_parquet_path):
 
 
 def main():
-    csv_file = "exp/dataset/test_a800.csv"
+    csv_file = "exp/dataset/a800.csv"
     output_dir = "exp/dataset"
 
     try:

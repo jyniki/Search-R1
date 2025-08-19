@@ -80,6 +80,7 @@ class RewardManager:
             valid_response_ids = response_ids[:valid_response_length]
 
             # decode
+            question = data_item.non_tensor_batch['extra_info']['question']
             sequences = torch.cat((valid_prompt_ids, valid_response_ids))
             sequences_str = self.tokenizer.decode(sequences)
 
@@ -90,6 +91,7 @@ class RewardManager:
             compute_score_fn = _select_rm_score_fn(data_source)
 
             score = compute_score_fn(
+                question=question,
                 solution_str=sequences_str,
                 ground_truth=ground_truth,
                 format_score=self.format_score,
@@ -124,6 +126,7 @@ def main(config):
     if not ray.is_initialized():
         # this is for local ray cluster
         ray.init(
+            _temp_dir="tmp/ray",
             runtime_env={
                 "env_vars": {"TOKENIZERS_PARALLELISM": "true", "NCCL_DEBUG": "WARN"},
             },

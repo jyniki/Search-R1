@@ -10,10 +10,10 @@ import requests
 import pandas as pd
 from tqdm import tqdm
 from exp.milvus_search import search
-from exp.settings import LLM_URL
+from exp.settings import LLM_URL, LLM_API_KEY
 from verl.utils.reward_score.qa_em_llm import compute_score_em, extract_solution
 
-df = pd.read_csv("exp/dataset/test_a800.csv")
+df = pd.read_csv("/rt-vepfs/xjl/Search-R1/exp/dataset/a800_testset.csv")
 RAG_PROMPT = """
 你是一个智能问答助手，请基于以下检索到的相关信息回答用户的问题。
 如果检索到的信息不足以回答问题，请如实告知用户你不知道答案。
@@ -41,7 +41,7 @@ def get_llm_answer(prompt):
     response = requests.post(
         LLM_URL,
         json=payload,
-        headers={"Authorization": "Basic cnQtdXNlcjoxa3NaUjkzWg=="},
+        headers={"Authorization": "Basic " + LLM_API_KEY},
     )
     return response.json()["choices"][0]["message"]["content"]
 
@@ -50,12 +50,12 @@ df["llm_answer"] = None
 df["score"] = None
 
 for index, row in tqdm(df.iterrows(), total=len(df), desc="Pure RAG"):
-    question = row["问题"]
+    question = row["question"]
     search_results = search(question, topk=3)
     prompt = RAG_PROMPT.format(query=question, ref=search_results)
     solution_str = prompt + "\n" + get_llm_answer(prompt)
     llm_answer = extract_solution(solution_str=solution_str)
-    score = compute_score_em(solution_str, ground_truth={"target": row["答案"]})
+    score = compute_score_em(question, solution_str, ground_truth={"target": row["golden_answers"]})
     df.at[index, "llm_answer"] = llm_answer
     df.at[index, "score"] = score
 

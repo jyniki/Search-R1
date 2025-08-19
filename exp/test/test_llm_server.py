@@ -6,9 +6,9 @@ FileName: test_llm_server
 Description:
 """
 
-LLM_URL = "http://106.75.245.178:8600/v1/chat/completions"
 
 import requests
+from exp.settings import LLM_URL, LLM_API_KEY
 
 payload = {
     "model": "gpt-4.1",
@@ -18,7 +18,7 @@ try:
     response = requests.post(
         LLM_URL,
         json=payload,
-        headers={"Authorization": "Basic cnQtdXNlcjoxa3NaUjkzWg=="},
+        headers={"Authorization": f"Basic {LLM_API_KEY}"},
     )
     print(response.json())
 except Exception as e:

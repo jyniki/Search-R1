@@ -10,7 +10,7 @@ from verl.utils.tracking import Tracking
 import shutil
 import requests
 from exp.milvus_search import search
-
+from verl.utils.reward_score.qa_keyword_impact_llm import keyword_impact_llm_score
 
 @dataclass
 class GenerationConfig:
@@ -269,8 +269,8 @@ class LLMGenerationManager:
             gen_batch.batch["input_ids"].shape[0], dtype=torch.int
         )
         active_num_list = [active_mask.sum().item()]
+        keywords = [""] * gen_batch.batch["input_ids"].shape[0]
         rollings = gen_batch
-
         # Main generation loop
         for step in range(self.config.max_turns):
             if not active_mask.sum():
@@ -278,13 +278,11 @@ class LLMGenerationManager:
             rollings.batch = self.tensor_fn.cut_to_effective_len(
                 rollings.batch, keys=["input_ids", "attention_mask", "position_ids"]
             )
-
             # gen_output = self.actor_rollout_wg.generate_sequences(rollings)
             rollings_active = DataProto.from_dict(
                 {k: v[active_mask] for k, v in rollings.batch.items()}
             )
             gen_output = self._generate_with_gpu_padding(rollings_active)
-
             meta_info = gen_output.meta_info
             responses_ids, responses_str = self._postprocess_responses(
                 gen_output.batch["responses"]
@@ -294,8 +292,8 @@ class LLMGenerationManager:
             )
 
             # Execute in environment and process observations
-            next_obs, dones, valid_action, is_search = self.execute_predictions(
-                responses_str, self.tokenizer.pad_token, active_mask
+            next_obs, dones, valid_action, is_search, keywords = self.execute_predictions(
+                responses_str, keywords, self.tokenizer.pad_token, active_mask
             )
 
             curr_active_mask = torch.tensor(
@@ -336,8 +334,8 @@ class LLMGenerationManager:
             )
 
             # # Execute in environment and process observations
-            _, dones, valid_action, is_search = self.execute_predictions(
-                responses_str, self.tokenizer.pad_token, active_mask, do_search=False
+            _, dones, valid_action, is_search, keywords = self.execute_predictions(
+                responses_str, keywords, self.tokenizer.pad_token, active_mask, do_search=False
             )
 
             curr_active_mask = torch.tensor(
@@ -352,7 +350,7 @@ class LLMGenerationManager:
                 original_right_side,
                 responses_ids,
             )
-
+        meta_info["keywords_contri"] = self.batch_keyword_impact_llm_score(gen_batch.non_tensor_batch['question'], keywords)
         meta_info["turns_stats"] = turns_stats.tolist()
         meta_info["active_mask"] = active_mask.tolist()
         meta_info["valid_action_stats"] = valid_action_stats.tolist()
@@ -404,7 +402,7 @@ class LLMGenerationManager:
         return final_output
 
     def execute_predictions(
-        self, predictions: List[str], pad_token: str, active_mask=None, do_search=True
+        self, predictions: List[str], keywords: List[str], pad_token: str, active_mask=None, do_search=True
     ) -> List[str]:
         """
         Execute predictions across multiple environments.
@@ -421,12 +419,18 @@ class LLMGenerationManager:
         """
         cur_actions, contents = self.postprocess_predictions(predictions)
         next_obs, dones, valid_action, is_search = [], [], [], []
+        search_queries = []
 
-        search_queries = [
-            content
-            for action, content in zip(cur_actions, contents)
-            if action == "search"
-        ]
+        for i, (cur_action, content) in enumerate(zip(cur_actions, contents)):
+            if cur_action == "search":
+                keywords[i] = content
+                search_queries.append(content)
+            
+        # search_queries = [
+        #     content
+        #     for action, content in zip(cur_actions, contents)
+        #     if action == "search"
+        # ]
         if do_search:
             if self.config.search_engine == "serp":
                 search_results = self.batch_search(search_queries)
@@ -468,8 +472,7 @@ class LLMGenerationManager:
                         f"\n我之前的操作不对。 \
 如果需要搜索，需要把查询内容放在<search>和</search>之间。 \
 如果需要给出最终答案，需要把答案放在<answer>和</answer>之间。 \
-让我再试一遍。\n"
-                    )
+让我再试一遍。\n")
 
 #                     next_obs.append(
 #                         f"\nMy previous action is invalid. \
@@ -482,7 +485,7 @@ class LLMGenerationManager:
 
         assert len(search_results) == 0
 
-        return next_obs, dones, valid_action, is_search
+        return next_obs, dones, valid_action, is_search, keywords
 
     def postprocess_predictions(
         self, predictions: List[Any]
@@ -533,6 +536,9 @@ class LLMGenerationManager:
 
     def batch_milvus_search(self, queries: List[str] = None):
         return [search(query, self.config.topk) for query in queries]
+
+    def batch_keyword_impact_llm_score(self, questions: List[str], keywords: List[str]):
+        return [keyword_impact_llm_score(question, keyword) for question, keyword in zip(questions, keywords)]
 
     def _batch_search(self, queries):
 

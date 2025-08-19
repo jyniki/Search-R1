@@ -28,11 +28,11 @@ import datetime
 import requests
 from typing import Optional
 from exp.settings import LLM_URL, LLM_API_KEY, LLM_CALL_CNT_LOG
-call_cnt = 0
 
 
-def llm_score(prediction, golden_answer):
+def llm_score(question, prediction, golden_answer):
     prompt = f"""
+问题: {question}
 标准答案：{golden_answer}
 模型回答：{prediction}
 
@@ -40,18 +40,24 @@ def llm_score(prediction, golden_answer):
 1. 如果答案包含数字，请注意：
     - 对于百分比或小数，只要数值在四舍五入后是一致的，就视为正确（例如：-10.4086% 和 -10.41% 应该被视为相同答案）
 2. 如果单位不同，但数值转换后是一致的，视为正确
-3. 考虑回答的完整性
-
-如果模型回答正确，返回1.0；如果模型回答部分正确，返回0.5；如果模型回答错误，返回0.0。
+3. 具体评分标准如下：
+    - 如果模型回答完全正确，返回1.0；
+    - 如果模型回答正确但不简洁，返回0.75；
+    - 如果包含2个及以上问题，部分问题回答正确且不包含错误答案，返回0.5；
+    - 如果包含2个及以上问题，部分问题回答正确且包含错误答案，返回0.25；
+    - 如果模型回答与问题不相关、完全错误或回答为空，返回0；
 返回格式为json，格式如下：
 {{
-    "score": 0 or 0.5 or 1
+    "score": 0 or 0.25 or 0.5 or 0.75 or 1
 }}
 """
     payload = {
         "model": "gpt-4.1",
         "messages": [
-            {"role": "system", "content": "You are a helpful assistant"},
+            {
+                "role": "system",
+                "content": "你是一个评分专家，请根据评分标准对模型回答进行评分。",
+            },
             {"role": "user", "content": prompt},
         ],
         "stream": False,
@@ -66,16 +72,18 @@ def llm_score(prediction, golden_answer):
     call_cnt += 1
     if call_cnt % 100 == 0:
         with open(LLM_CALL_CNT_LOG, "w") as f:
-            f.write(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} 总调用次数：{call_cnt}")
+            f.write(
+                f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} 总调用次数：{call_cnt}"
+            )
     return json.loads(response.json()["choices"][0]["message"]["content"])
 
 
-def em_check(prediction, golden_answer):
+def em_check(question, prediction, golden_answer):
     max_retries = 3
     retry_delay = 1
     for attempt in range(max_retries):
         try:
-            score = float(llm_score(prediction, golden_answer)["score"])
+            score = float(llm_score(question, prediction, golden_answer)["score"])
             return score
         except Exception as e:
             print(f"Attempt {attempt + 1}/{max_retries} failed: {e}")
@@ -95,14 +103,14 @@ def extract_solution(solution_str) -> Optional[str]:
     match = re.finditer(answer_pattern, solution_str, re.DOTALL)
     matches = list(match)
 
-    if len(matches) <= 1:
+    if len(matches) < 1:
         return None
 
     return matches[-1].group(1).strip()
 
 
 def compute_score_em(
-    solution_str, ground_truth, method="strict", format_score=0.0, score=1.0
+    question, solution_str, ground_truth, method="strict", format_score=0.0, score=1.0
 ):
     """The scoring function for exact match (EM).
 
@@ -118,12 +126,15 @@ def compute_score_em(
 
     if do_print:
         print(f"--------------------------------")
+        print(f"Question: {question}")
         print(f"Golden answers: {ground_truth['target']}")
         print(f"Extracted answer: {answer}")
         print(f"Solution string: {solution_str}")
 
     if answer is None:
         score = 0.0
+    elif answer == "" or answer == "和":
+        score = 0.0
     else:
-        score = em_check(answer, ground_truth["target"])
+        score = em_check(question, answer, ground_truth["target"])
     return score

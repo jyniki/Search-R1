@@ -347,6 +347,19 @@ def compute_timing_metrics(batch, timing_raw):
         },
     }
 
+def compute_keyword_impact_metrics(batch):
+    keywords_contri_list = batch.meta_info["keywords_contri"]
+    keywords_contri = np.array(keywords_contri_list)
+    count_0 = np.sum(np.isclose(keywords_contri, 0))
+    count_05 = np.sum(np.isclose(keywords_contri, 0.5))
+    count_1 = np.sum(np.isclose(keywords_contri, 1))
+    total = len(keywords_contri)
+    return {
+        "response_quality/keyword_impact": float(keywords_contri.mean()),
+        "response_quality/keyword_impact_0_ratio": float(count_0) / total,
+        "response_quality/keyword_impact_05_ratio": float(count_05) / total,
+        "response_quality/keyword_impact_1_ratio": float(count_1) / total
+    }
 
 @contextmanager
 def _timer(name: str, timing_raw: Dict[str, float]):
@@ -574,7 +587,8 @@ class RayPPOTrainer(object):
                     return {}
 
                 test_gen_batch = test_batch.pop(
-                    ["input_ids", "attention_mask", "position_ids"]
+                    batch_keys=["input_ids", "attention_mask", "position_ids"],
+                    non_tensor_batch_keys=["question"]
                 )
                 test_gen_batch.meta_info = {
                     "eos_token_id": self.tokenizer.eos_token_id,
@@ -616,7 +630,8 @@ class RayPPOTrainer(object):
                 # test_batch = test_batch.repeat(repeat_times=self.config.actor_rollout_ref.rollout.n_agent, interleave=True)
 
                 test_gen_batch = test_batch.pop(
-                    batch_keys=["input_ids", "attention_mask", "position_ids"]
+                    batch_keys=["input_ids", "attention_mask", "position_ids"],
+                    non_tensor_batch_keys=["question"]
                 )
                 test_gen_batch.meta_info = {
                     "eos_token_id": self.tokenizer.eos_token_id,
@@ -667,8 +682,18 @@ class RayPPOTrainer(object):
 
         metric_dict = {}
         for data_source, rewards in data_source_reward.items():
+            count_0 = np.sum(np.isclose(rewards, 0))
+            count_025 = np.sum(np.isclose(rewards, 0.25))
+            count_05 = np.sum(np.isclose(rewards, 0.5))
+            count_075 = np.sum(np.isclose(rewards, 0.75))
+            count_1 = np.sum(np.isclose(rewards, 1))
+            total = len(rewards)
             metric_dict[f"val/test_score/{data_source}"] = np.mean(rewards)
-
+            metric_dict[f"val/test_score/{data_source}_0_ratio"] = float(count_0) / total
+            metric_dict[f"val/test_score/{data_source}_025_ratio"] = float(count_025) / total
+            metric_dict[f"val/test_score/{data_source}_05_ratio"] = float(count_05) / total
+            metric_dict[f"val/test_score/{data_source}_075_ratio"] = float(count_075) / total
+            metric_dict[f"val/test_score/{data_source}_1_ratio"] = float(count_1) / total
         return metric_dict
 
     def init_workers(self):
@@ -1350,10 +1375,10 @@ class RayPPOTrainer(object):
                     repeat_times=self.config.actor_rollout_ref.rollout.n_agent,
                     interleave=True,
                 )
-
                 # pop those keys for generation
                 gen_batch = batch.pop(
-                    batch_keys=["input_ids", "attention_mask", "position_ids"]
+                    batch_keys=["input_ids", "attention_mask", "position_ids"],
+                    non_tensor_batch_keys=["question"]
                 )
 
                 ####################
@@ -1537,6 +1562,9 @@ class RayPPOTrainer(object):
                 )
                 metrics.update(
                     compute_timing_metrics(batch=batch, timing_raw=timing_raw)
+                )
+                metrics.update(
+                    compute_keyword_impact_metrics(batch=batch)
                 )
 
                 responses_str = self.tokenizer.batch_decode(batch.batch["responses"], skip_special_tokens=True)
